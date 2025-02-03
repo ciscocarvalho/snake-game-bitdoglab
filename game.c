@@ -309,6 +309,7 @@ int main() {
     int button_down = wait_button_a_or_b();
 
     if (button_down == BUTTON_A) {
+        ssd1306_clear(ssd, ssd1306_buffer_length, text_area);
         return 0;
     } else {
         sleep_ms(200);
@@ -325,11 +326,12 @@ int main() {
         }
     }
 
+    ssd1306_clear(ssd, ssd1306_buffer_length, text_area);
+
     // Weird led bugs made me paranoid
     for (int i = 0; i < 3; i++) {
         npClear();
         npWrite();
-        ssd1306_clear(ssd, ssd1306_buffer_length, text_area);
         sleep_ms(50);
     }
 
