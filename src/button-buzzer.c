@@ -44,27 +44,3 @@ void beep(uint pin, uint duration_ms) {
     // Pausa entre os beeps
     sleep_ms(100); // Pausa de 100ms
 }
-
-int main() {
-    // Configuração do GPIO para o botão como entrada com pull-up
-    const uint BUTTON_PIN = 5;  // Pino do botão
-    gpio_init(BUTTON_PIN);
-    gpio_set_dir(BUTTON_PIN, GPIO_IN);
-    gpio_pull_up(BUTTON_PIN);
-
-    // Configuração do GPIO para o buzzer como saída
-    gpio_init(BUZZER_PIN);
-    gpio_set_dir(BUZZER_PIN, GPIO_OUT);
-    // Inicializar o PWM no pino do buzzer
-    pwm_init_buzzer(BUZZER_PIN);
-    while (true) {
-        // Verifica o estado do botão
-        if (gpio_get(BUTTON_PIN) == 0) {  // Botão pressionado (nível lógico baixo)
-            printf("Button pressed\n");
-            beep(BUZZER_PIN, 1000); // Bipe de 500ms     // Liga o buzzer
-                         // Aguarda 1 segundo
-        }
-    }
-
-    return 0;
-}

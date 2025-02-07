@@ -14,7 +14,7 @@ void joystick_init() {
 }
 
 JoystickInfo joystick_get_info() {
-    JoystickInfo info = {};    
+    JoystickInfo info = {};
 
     adc_select_input(0);
     info.y_raw = adc_read();

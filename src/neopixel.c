@@ -95,36 +95,3 @@ void copy_color(LedColor source, LedColor target) {
     target[i] = source[i];
   }
 }
-
-// int main() {
-//   stdio_init_all();
-  // npInit(LED_PIN);
-  // npClear();
-
-  // int sprite1[5][5][3];
-
-  // int matrix1[5][5] = {
-  //   { 0, 0, 0, 0, 0 },
-  //   { 0, 1, 0, 2, 0 },
-  //   { 0, 0, 0, 0, 0 },
-  //   { 0, 3, 0, 4, 0 },
-  //   { 0, 0, 0, 0, 0 },
-  // };
-
-  // gen_sprite(matrix1, sprite1);
-
-  // setSpriteLEDs(sprite1);
-  // npWrite();
-  // sleep_ms(1000);
-  // npClear();
-  // npWrite();
-
-  // while (true) {
-  //   setSpriteLEDs(sprite1);
-  //   npWrite();
-  //   sleep_ms(1000);
-  //   setSpriteLEDs(sprite2);
-  //   npWrite();
-  //   sleep_ms(1000);
-  // }
-// }
