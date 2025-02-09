@@ -29,7 +29,11 @@ void display_show_lines(uint8_t *ssd, uint8_t ssd_size, char* lines[], uint8_t l
     ssd1306_clear(ssd, ssd_size, frame_area);
 
     for (uint i = 0; i < lines_size; i++) {
-        ssd1306_draw_string(ssd, 0, i * 8, lines[i]);
+        uint font_size = 8;
+        uint x = (ssd1306_width - strlen(lines[i]) * font_size) / 2 - 1;
+        uint y = (ssd1306_height - lines_size * font_size) / 2 + i * font_size;
+
+        ssd1306_draw_string(ssd, x, y, lines[i]);
     }
 
     render_on_display(ssd, &frame_area);
@@ -95,17 +99,17 @@ int game_loop() {
     };
 
     char *controls_text_on_win[] = {
-        "You win!",
+        "You win",
         "",
-        "A: Quit",
-        "B: Play again",
+        "A Quit",
+        "B Play again",
     };
 
     char *controls_text_on_loss[] = {
-        "You lose :(",
+        "You lose",
         "",
-        "A: Quit",
-        "B: Try again",
+        "A Quit",
+        "B Try again",
     };
 
     RenderArea text_area = ssd1306_init();
@@ -295,8 +299,8 @@ int main() {
     char *controls_text_on_start[] = {
         "Snake",
         "",
-        "A: Quit",
-        "B: Play",
+        "A Quit",
+        "B Play",
     };
 
     npClear();
