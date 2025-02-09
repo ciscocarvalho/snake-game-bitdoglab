@@ -1,5 +1,6 @@
 <div align="center">
     <h1>Snake Game</h1>
+    <a href="./docs/README.pt-br.md">Português (Brasil)</a>
 </div>
 
 <br /><br />
