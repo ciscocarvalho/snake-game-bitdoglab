@@ -5,6 +5,7 @@
 
 typedef struct Apple {
   Position position;
+  bool in_canvas;
 } Apple;
 
 Apple* apple_init(Canvas* canvas);

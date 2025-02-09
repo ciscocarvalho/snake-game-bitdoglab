@@ -7,7 +7,7 @@
 #include "../headers/constants.h"
 #include "../headers/canvas.h"
 
-static void snake_remove(Snake* snake, Canvas* canvas) {
+void snake_remove(Snake* snake, Canvas* canvas) {
   for (int i = 0; i < snake->size; i++) {
     Position *node_position = &snake->node_positions[i];
     CanvasCell cell = canvas_get(canvas, *node_position);
@@ -16,6 +16,8 @@ static void snake_remove(Snake* snake, Canvas* canvas) {
       canvas_put(canvas, CELL_UNUSED, *node_position);
     }
   }
+
+  snake->in_canvas = false;
 }
 
 bool snake_node_is_head(Snake* snake, int node_index) {
@@ -31,6 +33,8 @@ static void snake_put(Snake* snake, Canvas* canvas) {
     CanvasCell cell = snake_node_is_head(snake, i) ? CELL_SNAKE_HEAD : CELL_SNAKE_BODY;
     canvas_put(canvas, cell, snake->node_positions[i]);
   }
+
+  snake->in_canvas = true;
 }
 
 static void snake_get_previous_node_position(Snake* snake, int node_index, Position previous_node_position) {

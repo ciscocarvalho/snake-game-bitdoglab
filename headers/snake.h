@@ -9,9 +9,10 @@
 #include "../headers/constants.h"
 #include "../headers/canvas.h"
 
-typedef struct {
+typedef struct Snake {
   Position* node_positions;
   Direction direction;
+  bool in_canvas;
   int size;
 } Snake;
 
@@ -26,6 +27,8 @@ void snake_get_new_node_position(Snake* snake, Canvas* canvas, Position node_pos
 void snake_grow(Snake *snake, Canvas* canvas);
 
 void snake_free(Snake* snake);
+
+void snake_remove(Snake* snake, Canvas* canvas);
 
 void snake_move(Snake* snake, Canvas* canvas);
 
