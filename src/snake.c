@@ -71,16 +71,6 @@ static Direction get_node_direction(Snake* snake, int node_index) {
   }
 };
 
-static Direction get_opposite_direction(Direction direction) {
-  switch (direction) {
-    case DIRECTION_NORTH: return DIRECTION_SOUTH;
-    case DIRECTION_EAST: return DIRECTION_WEST;
-    case DIRECTION_SOUTH: return DIRECTION_NORTH;
-    case DIRECTION_WEST: return DIRECTION_EAST;
-    default: return -1;
-  }
-}
-
 void snake_get_head_position(Snake* snake, Position head_position) {
   copy_position(snake->node_positions[0], head_position);
 }

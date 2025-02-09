@@ -2,6 +2,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <constants.h>
 #include "../headers/types.h"
 #include "pico/time.h"
 
@@ -13,6 +14,16 @@ void memory_allocation_error() {
 void copy_position(Position source, Position target) {
   target[0] = source[0];
   target[1] = source[1];
+}
+
+Direction get_opposite_direction(Direction direction) {
+  switch (direction) {
+    case DIRECTION_NORTH: return DIRECTION_SOUTH;
+    case DIRECTION_EAST: return DIRECTION_WEST;
+    case DIRECTION_SOUTH: return DIRECTION_NORTH;
+    case DIRECTION_WEST: return DIRECTION_EAST;
+    default: return -1;
+  }
 }
 
 bool positions_collide(Position position1, Position position2) {

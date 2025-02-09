@@ -146,62 +146,23 @@ int game_loop() {
             JoystickInfo joystick_info = joystick_get_info();
             Direction joystick_direction = joystick_info.direction;
 
-            switch (joystick_direction) {
-                case DIRECTION_NORTH: {
-                    if (allow_speeding && current_direction == DIRECTION_NORTH) {
-                        skip_delay = true;
-                    } else if (current_direction != DIRECTION_SOUTH) {
-                        new_direction = DIRECTION_NORTH;
-                    }
-
-                    break;
-                }
-                case DIRECTION_EAST: {
-                    if (allow_speeding && current_direction == DIRECTION_EAST) {
-                        skip_delay = true;
-                    } else if (current_direction != DIRECTION_WEST) {
-                        new_direction = DIRECTION_EAST;
-                    }
-
-                    break;
-                }
-                case DIRECTION_SOUTH: {
-                    if (allow_speeding && current_direction == DIRECTION_SOUTH) {
-                        skip_delay = true;
-                    } else if (current_direction != DIRECTION_NORTH) {
-                        new_direction = DIRECTION_SOUTH;
-                    }
-
-                    break;
-                }
-                case DIRECTION_WEST: {
-                    if (allow_speeding && current_direction == DIRECTION_WEST) {
-                        skip_delay = true;
-                    } else if (current_direction != DIRECTION_EAST) {
-                        new_direction = DIRECTION_WEST;
-                    }
-
-                    break;
+            if (joystick_direction != DIRECTION_NONE) {
+                if (allow_speeding && current_direction == joystick_direction) {
+                    skip_delay = true;
+                } else if (current_direction != get_opposite_direction(joystick_direction)) {
+                    new_direction = joystick_direction;
                 }
             }
 
             bool button_a_down = is_button_down(BUTTON_A);
             bool button_b_down = is_button_down(BUTTON_B);
 
-            if (button_a_down) {
+            if (button_a_down || button_b_down) {
                 going = false;
                 skip_delay = true;
-                next_action = ACTION_QUIT;
+                next_action = button_a_down ? ACTION_QUIT : ACTION_RESTART;
 
-                while (is_button_down(BUTTON_A)) {
-                    sleep_ms(10);
-                }
-            } else if (button_b_down) {
-                going = false;
-                skip_delay = true;
-                next_action = ACTION_RESTART;
-
-                while (is_button_down(BUTTON_B)) {
+                while (is_button_down(button_a_down ? BUTTON_A : BUTTON_B)) {
                     sleep_ms(10);
                 }
             }
