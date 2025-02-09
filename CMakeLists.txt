@@ -52,7 +52,7 @@ pico_sdk_init()
 add_executable(
     game
     game.c
-    src/apple.c
+    src/food.c
     src/canvas.c
     src/joystick.c
     src/matrix.c

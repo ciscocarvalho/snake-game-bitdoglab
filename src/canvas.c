@@ -80,7 +80,7 @@ static void gen_sprite(Canvas* canvas, int sprite[5][5][3]) {
         } case CELL_SNAKE_HEAD: {
           copy_color((int [3]){ 1, 1, 1 }, sprite[row][col]);
           break;
-        } case CELL_APPLE: {
+        } case CELL_FOOD: {
           copy_color((int [3]){ 1, 0, 0 }, sprite[row][col]);
           break;
         } case CELL_SNAKE_BODY: {

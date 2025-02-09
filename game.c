@@ -11,7 +11,7 @@
 #include "./headers/constants.h"
 #include "./headers/canvas.h"
 #include "./headers/snake.h"
-#include "./headers/apple.h"
+#include "./headers/food.h"
 #include "./headers/utils.h"
 #include "./headers/joystick.h"
 #include "./headers/melody.h"
@@ -111,7 +111,7 @@ int game_loop() {
     // canvas_get_random_free_position(canvas, snake_position);
     copy_position((int [2]){ 2, 1 }, snake_position);
     Snake* snake = snake_init(canvas, snake_position, DIRECTION_EAST, 2);
-    Apple* apple = apple_init(canvas);
+    Food* food = food_init(canvas);
 
     canvas_render(canvas);
 
@@ -173,14 +173,14 @@ int game_loop() {
         Position next_head_position;
         get_next_node_position(snake, canvas, 0, next_head_position);
 
-        if (positions_collide(next_head_position, apple->position)) {
-            apple_remove(apple, canvas);
+        if (positions_collide(next_head_position, food->position)) {
+            food_remove(food, canvas);
             play_bite(BUZZER_PIN);
             snake_grow(snake, canvas);
             snake_move(snake, canvas);
 
             if (canvas_count_free_positions(canvas) > 0) {
-                apple_move(apple, canvas);
+                food_move(food, canvas);
             }
         } else {
             snake_move(snake, canvas);
@@ -189,7 +189,7 @@ int game_loop() {
         canvas_render(canvas);
 
         bool game_over = snake_self_collides(snake);
-        bool game_won = canvas_count_free_positions(canvas) == 0 && !apple->in_canvas;
+        bool game_won = canvas_count_free_positions(canvas) == 0 && !food->in_canvas;
 
         if (game_over || game_won) {
             if (game_over) {
@@ -213,7 +213,7 @@ int game_loop() {
         canvas_render(canvas);
     }
 
-    apple_free(apple);
+    food_free(food);
     snake_free(snake);
     canvas_clear(canvas);
     canvas_render(canvas);
