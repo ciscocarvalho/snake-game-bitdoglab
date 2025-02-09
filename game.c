@@ -5,7 +5,6 @@
 #include <unistd.h>
 #include "pico/stdlib.h"
 #include "pico/binary_info.h"
-#include "hardware/clocks.h"
 #include "hardware/adc.h"
 #include "hardware/i2c.h"
 #include "hardware/pwm.h"
@@ -15,6 +14,7 @@
 #include "./headers/apple.h"
 #include "./headers/utils.h"
 #include "./headers/joystick.h"
+#include "./headers/melody.h"
 #include "./headers/neopixel.h"
 #include "./headers/display_oled/ssd1306.h"
 
@@ -74,19 +74,6 @@ void pwm_init_buzzer(uint pin) {
     pwm_config_set_clkdiv(&config, 4.0f); // Ajusta divisor de clock
     pwm_init(slice_num, &config, true);
     pwm_set_gpio_level(pin, 0); // Desliga o PWM inicialmente
-}
-
-void play_tone(uint pin, uint frequency, uint duration_ms) {
-    uint slice_num = pwm_gpio_to_slice_num(pin);
-    uint32_t clock_freq = clock_get_hz(clk_sys);
-    uint32_t top = clock_freq / frequency - 1;
-
-    pwm_set_wrap(slice_num, top);
-    pwm_set_gpio_level(pin, top / 2); // 50% de duty cycle
-
-    sleep_ms(duration_ms);
-
-    pwm_set_gpio_level(pin, 0); // Desliga o som após a duração
 }
 
 int game_loop() {
@@ -188,7 +175,7 @@ int game_loop() {
 
         if (positions_collide(next_head_position, apple->position)) {
             snake_grow(snake, canvas);
-            play_tone(BUZZER_PIN, 392, 50);
+            play_bite(BUZZER_PIN);
             apple_move(apple, canvas);
         }
 
@@ -200,8 +187,10 @@ int game_loop() {
 
         if (game_over || game_won) {
             if (game_over) {
+                play_game_over(BUZZER_PIN);
                 display_show_lines(ssd, count_of(ssd), controls_text_on_loss, count_of(controls_text_on_loss), text_area);
             } else {
+                play_game_won(BUZZER_PIN);
                 display_show_lines(ssd, count_of(ssd), controls_text_on_win, count_of(controls_text_on_win), text_area);
             }
 

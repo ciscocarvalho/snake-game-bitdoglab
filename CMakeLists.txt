@@ -56,6 +56,7 @@ add_executable(
     src/canvas.c
     src/joystick.c
     src/matrix.c
+    src/melody.c
     src/neopixel.c
     src/snake.c
     src/utils.c
