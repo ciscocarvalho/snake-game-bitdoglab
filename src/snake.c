@@ -9,7 +9,12 @@
 
 static void snake_remove(Snake* snake, Canvas* canvas) {
   for (int i = 0; i < snake->size; i++) {
-    canvas_put(canvas, CELL_UNUSED, snake->node_positions[i]);
+    Position *node_position = &snake->node_positions[i];
+    CanvasCell cell = canvas_get(canvas, *node_position);
+
+    if (cell == CELL_SNAKE_BODY || cell == CELL_SNAKE_HEAD) {
+      canvas_put(canvas, CELL_UNUSED, *node_position);
+    }
   }
 }
 

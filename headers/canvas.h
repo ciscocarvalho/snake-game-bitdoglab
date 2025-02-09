@@ -12,6 +12,8 @@ typedef MatrixPosition CanvasPosition;
 
 void canvas_render(Canvas* canvas);
 
+CanvasCell canvas_get(Canvas *canvas, CanvasPosition position);
+
 void canvas_put(Canvas *canvas, CanvasCell cell, CanvasPosition position);
 
 void canvas_clear(Canvas *canvas);

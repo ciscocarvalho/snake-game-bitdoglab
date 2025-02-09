@@ -25,7 +25,9 @@ Apple* apple_init(Canvas* canvas) {
 }
 
 void apple_remove(Apple* apple, Canvas* canvas) {
-  canvas_put(canvas, CELL_UNUSED, apple->position);
+  if (canvas_get(canvas, apple->position) == CELL_APPLE) {
+    canvas_put(canvas, CELL_UNUSED, apple->position);
+  }
 }
 
 void apple_move(Apple* apple, Canvas* canvas) {

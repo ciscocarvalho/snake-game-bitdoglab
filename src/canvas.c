@@ -105,6 +105,12 @@ void canvas_render(Canvas* canvas) {
   npWrite();
 }
 
+CanvasCell canvas_get(Canvas *canvas, CanvasPosition position) {
+  int row = position[0];
+  int col = position[1];
+  return canvas->data[row][col];
+};
+
 void canvas_put(Canvas *canvas, CanvasCell cell, CanvasPosition position) {
   matrix_put(canvas, position, cell);
 };

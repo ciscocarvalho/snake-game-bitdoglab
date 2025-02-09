@@ -176,10 +176,15 @@ int game_loop() {
         if (positions_collide(next_head_position, apple->position)) {
             snake_grow(snake, canvas);
             play_bite(BUZZER_PIN);
-            apple_move(apple, canvas);
+            snake_move(snake, canvas);
+
+            if (canvas_count_free_positions(canvas) > 0) {
+                apple_move(apple, canvas);
+            }
+        } else {
+            snake_move(snake, canvas);
         }
 
-        snake_move(snake, canvas);
         canvas_render(canvas);
 
         bool game_over = snake_self_collides(snake);
