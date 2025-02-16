@@ -1,4 +1,4 @@
-#include "../headers/melody.h"
+#include "../inc/melody.h"
 #include "pico/types.h"
 #include "hardware/clocks.h"
 #include "hardware/pwm.h"

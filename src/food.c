@@ -1,9 +1,9 @@
 #include <malloc.h>
 #include <unistd.h>
 #include <stdbool.h>
-#include "../headers/utils.h"
-#include "../headers/food.h"
-#include "../headers/canvas.h"
+#include "../inc/utils.h"
+#include "../inc/food.h"
+#include "../inc/canvas.h"
 
 static void get_next_position(Food* food, Canvas* canvas, Position next_position) {
   canvas_get_random_free_position(canvas, next_position);

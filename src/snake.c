@@ -2,10 +2,10 @@
 #include <malloc.h>
 #include <unistd.h>
 #include <stdbool.h>
-#include "../headers/utils.h"
-#include "../headers/snake.h"
-#include "../headers/constants.h"
-#include "../headers/canvas.h"
+#include "../inc/utils.h"
+#include "../inc/snake.h"
+#include "../inc/constants.h"
+#include "../inc/canvas.h"
 
 void snake_remove(Snake* snake, Canvas* canvas) {
   for (int i = 0; i < snake->size; i++) {

@@ -5,8 +5,8 @@
 #include "pico/stdlib.h"
 #include "pico/binary_info.h"
 #include "hardware/i2c.h"
-#include "../../headers/display_oled/ssd1306_font.h"
-#include "../../headers/display_oled/ssd1306_i2c.h"
+#include "../../inc/display_oled/ssd1306_font.h"
+#include "../../inc/display_oled/ssd1306_i2c.h"
 
 RenderArea get_render_area() {
     return (RenderArea){

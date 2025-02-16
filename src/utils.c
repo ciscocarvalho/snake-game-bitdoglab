@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <constants.h>
-#include "../headers/types.h"
+#include "../inc/types.h"
 #include "pico/time.h"
 
 void memory_allocation_error() {

@@ -87,7 +87,7 @@ target_include_directories(game PUBLIC
   ${CMAKE_CURRENT_LIST_DIR}
   ${CMAKE_CURRENT_LIST_DIR}/src
   ${CMAKE_CURRENT_LIST_DIR}/src/display_oled
-  ${CMAKE_CURRENT_LIST_DIR}/headers
+  ${CMAKE_CURRENT_LIST_DIR}/inc
 )
 
 pico_add_extra_outputs(game)

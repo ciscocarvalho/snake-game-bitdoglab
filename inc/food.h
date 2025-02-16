@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../headers/types.h"
-#include "../headers/canvas.h"
+#include "./types.h"
+#include "./canvas.h"
 
 typedef struct Food {
   Position position;

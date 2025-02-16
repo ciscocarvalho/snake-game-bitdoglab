@@ -5,9 +5,9 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include "pico/stdlib.h"
-#include "../headers/types.h"
-#include "../headers/constants.h"
-#include "../headers/canvas.h"
+#include "./types.h"
+#include "./constants.h"
+#include "./canvas.h"
 
 typedef struct Snake {
   Position* node_positions;

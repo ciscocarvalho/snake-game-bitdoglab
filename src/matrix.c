@@ -1,6 +1,6 @@
 #include <malloc.h>
-#include "../headers/matrix.h"
-#include "../headers/utils.h"
+#include "../inc/matrix.h"
+#include "../inc/utils.h"
 
 Matrix* matrix_init(int n_rows, int n_cols) {
   Matrix* matrix = malloc(sizeof(Matrix));

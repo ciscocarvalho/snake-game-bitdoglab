@@ -2,9 +2,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../headers/types.h"
-#include "../headers/constants.h"
-#include "../headers/matrix.h"
+#include "./types.h"
+#include "./constants.h"
+#include "./matrix.h"
 
 typedef Matrix Canvas;
 typedef MatrixDataType CanvasCell;

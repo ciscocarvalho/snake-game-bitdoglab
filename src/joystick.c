@@ -2,8 +2,8 @@
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
 #include "math.h"
-#include "../headers/joystick.h"
-#include "../headers/constants.h"
+#include "../inc/joystick.h"
+#include "../inc/constants.h"
 
 void joystick_init() {
     adc_init();

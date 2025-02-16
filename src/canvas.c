@@ -2,11 +2,11 @@
 #include <stdbool.h>
 #include <malloc.h>
 #include <stdlib.h>
-#include "../headers/types.h"
-#include "../headers/utils.h"
-#include "../headers/constants.h"
-#include "../headers/matrix.h"
-#include "../headers/neopixel.h"
+#include "../inc/types.h"
+#include "../inc/utils.h"
+#include "../inc/constants.h"
+#include "../inc/matrix.h"
+#include "../inc/neopixel.h"
 
 typedef Matrix Canvas;
 typedef MatrixDataType CanvasCell;
