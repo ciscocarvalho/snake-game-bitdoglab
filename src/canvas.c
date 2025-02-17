@@ -8,15 +8,25 @@
 #include "../inc/matrix.h"
 #include "../inc/neopixel.h"
 
+// ==========================================================================
+// CANVAS
+// Abstrai a lógica do cenário/mapa/tabuleiro do jogo, é onde tudo é
+// posicionado e renderizado.
+// Usa como base uma estrutura de dados de matriz (código em ./matrix.c), mas
+// adiciona funções úteis para a renderização e a lógica do jogo.
+// ==========================================================================
+
 typedef Matrix Canvas;
 typedef MatrixDataType CanvasCell;
 typedef MatrixPosition CanvasPosition;
 
+// checa se uma posição (linha, coluna) está livra
 static bool is_position_free(Canvas* canvas, Position position) {
   int row = position[0], col = position[1];
   return (canvas->data[row][col] == CELL_UNUSED);
 }
 
+// retorna um array com todas as posições (linha, coluna) livres
 Position* canvas_get_free_positions(Canvas* canvas, size_t* size) {
   *size = 0;
   Position* positions = NULL;
@@ -39,6 +49,9 @@ Position* canvas_get_free_positions(Canvas* canvas, size_t* size) {
   return positions;
 }
 
+// preenche o array position com uma posição livre aleatória, não deve ser
+// chamado caso não exista posição livre (isso pode ser checado por meio das
+// outras funções do canvas)
 void canvas_get_random_free_position(Canvas* canvas, Position position) {
   size_t positions_size;
 
@@ -54,6 +67,7 @@ void canvas_get_random_free_position(Canvas* canvas, Position position) {
   }
 }
 
+// retorna a quantidade de posições livres
 int canvas_count_free_positions(Canvas* canvas) {
   int count = 0;
 
@@ -68,6 +82,7 @@ int canvas_count_free_positions(Canvas* canvas) {
   return count;
 }
 
+// função utilitária para gerar um sprite para a matriz de leds
 static void gen_sprite(Canvas* canvas, int sprite[5][5][3]) {
   for (int row = 0; row < canvas->rows; row++) {
     for (int col = 0; col < canvas->cols; col++) {
@@ -95,6 +110,11 @@ static void gen_sprite(Canvas* canvas, int sprite[5][5][3]) {
   }
 }
 
+// renderiza o canvas, esta é a única função "pública" (sem static) que de fato
+// foge da abstração e usa a matriz de leds.
+// todas as funções que alteram o canvas de alguma forma apenas definem o que
+// será mostrado, mas é preciso chamar esta função quando for o tempo certo de
+// mostrar de fato.
 void canvas_render(Canvas* canvas) {
   npClear();
 
@@ -105,16 +125,20 @@ void canvas_render(Canvas* canvas) {
   npWrite();
 }
 
+// retorna a célula (o valor) de uma determinada posição do canvas.
+// isso é um inteiro correspondente a uma célula definida em ../inc/constants.h
 CanvasCell canvas_get(Canvas *canvas, CanvasPosition position) {
   int row = position[0];
   int col = position[1];
   return canvas->data[row][col];
 };
 
+// preenche o canvas numa posição específica
 void canvas_put(Canvas *canvas, CanvasCell cell, CanvasPosition position) {
   matrix_put(canvas, position, cell);
 };
 
+// limpa o canvas
 void canvas_clear(Canvas *canvas) {
   for (int i = 0; i < canvas->rows; i++) {
     for (int j = 0; j < canvas->cols; j++) {
@@ -123,12 +147,14 @@ void canvas_clear(Canvas *canvas) {
   };
 }
 
+// inicia o canvas
 Canvas* canvas_init(int n_rows, int n_cols) {
   Canvas* canvas = matrix_init(n_rows, n_cols);
   canvas_clear(canvas);
   return canvas;
 }
 
+// libera a memória alocada para o canvas
 void canvas_free(Canvas* canvas) {
   matrix_free(canvas);
 }

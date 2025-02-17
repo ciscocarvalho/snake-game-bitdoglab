@@ -2,6 +2,12 @@
 #include "../inc/matrix.h"
 #include "../inc/utils.h"
 
+// ===========================================================================
+// MATRIX
+// Uma abstração da estrutura de dados matriz.
+// ===========================================================================
+
+// inicia a matriz
 Matrix* matrix_init(int n_rows, int n_cols) {
   Matrix* matrix = malloc(sizeof(Matrix));
 
@@ -31,16 +37,19 @@ Matrix* matrix_init(int n_rows, int n_cols) {
   return matrix;
 };
 
+// pega o valor de uma certa posição da matriz
 MatrixDataType matrix_get(Matrix* matrix, MatrixPosition position) {
   int row = position[0], col = position[1];
   return matrix->data[row][col];
 }
 
+// preenche uma posição da matriz
 void matrix_put(Matrix* matrix, MatrixPosition position, MatrixDataType val) {
   int row = position[0], col = position[1];
   matrix->data[row][col] = val;
 }
 
+// libera a memória alocada para a matriz
 void matrix_free(Matrix* matrix) {
   if (matrix == NULL) {
     return;

@@ -7,6 +7,14 @@
 #include "../inc/constants.h"
 #include "../inc/canvas.h"
 
+// =================================================================================
+// SNAKE
+// Representação da cobra, contém várias funções análogas as de ./food.c.
+// "node" neste arquivo significa uma parte da cobrinha, podendo ser a cabeça
+// ou uma parte do corpo.
+// =================================================================================
+
+// remove a cobra do canvas
 void snake_remove(Snake* snake, Canvas* canvas) {
   for (int i = 0; i < snake->size; i++) {
     Position *node_position = &snake->node_positions[i];
@@ -20,10 +28,12 @@ void snake_remove(Snake* snake, Canvas* canvas) {
   snake->in_canvas = false;
 }
 
+// diz se o node na posição node_index é a cabeça da cobra
 bool snake_node_is_head(Snake* snake, int node_index) {
   return node_index == 0;
 }
 
+// coloca a cobra no canvas
 static void snake_put(Snake* snake, Canvas* canvas) {
   // By filling the cells from the last node to the first (head), the snake's
   // head takes priority over the body in case of a collision, making the head
@@ -37,10 +47,18 @@ static void snake_put(Snake* snake, Canvas* canvas) {
   snake->in_canvas = true;
 }
 
+// pega a posição do node anterior a outro node
 static void snake_get_previous_node_position(Snake* snake, int node_index, Position previous_node_position) {
   copy_position(snake->node_positions[node_index - 1], previous_node_position);
 }
 
+// pega uma posição relativa à posição de outro node, usando uma direção como
+// referência, e coloca a posição no array relative_position.
+// Por exemplo: se node_position é (1, 1) e direction é DIRECTION_NORTH, a
+// posição relativa é a posição norte à (1, 1), ou seja, (0, 1).
+// Quando o valor de uma linha ou coluna sai do intervalo válido do canvas, é
+// feita uma circularidade, por exemplo: em vez de entregar a posição (-1, 1) a
+// função entregará a posição (4, 1) (assumindo um canvas de tamanho 5x5).
 static void get_relative_position(Canvas* canvas, Position node_position, Direction direction, Position relative_position) {
   int row = node_position[0], col = node_position[1];
 
@@ -55,6 +73,7 @@ static void get_relative_position(Canvas* canvas, Position node_position, Direct
   copy_position((int [2]){ row, col }, relative_position);
 }
 
+// pega a direção de um node
 static Direction get_node_direction(Snake* snake, int node_index) {
   Position node_position;
   copy_position(snake->node_positions[node_index], node_position);
@@ -80,10 +99,13 @@ static Direction get_node_direction(Snake* snake, int node_index) {
   }
 };
 
+// pega a posição da cabeça da cobra
 void snake_get_head_position(Snake* snake, Position head_position) {
   copy_position(snake->node_positions[0], head_position);
 }
 
+// pega a posição em que será inserido um novo node, assume-se que pelo a
+// cabeça da cobra já exista.
 void snake_get_new_node_position(Snake* snake, Canvas* canvas, Position node_position) {
   Direction last_node_direction = get_node_direction(snake, snake->size - 1);
   get_relative_position(
@@ -94,6 +116,7 @@ void snake_get_new_node_position(Snake* snake, Canvas* canvas, Position node_pos
   );
 }
 
+// faz a cobra crescer
 void snake_grow(Snake *snake, Canvas* canvas) {
   snake_remove(snake, canvas);
 
@@ -112,10 +135,12 @@ void snake_grow(Snake *snake, Canvas* canvas) {
   snake_put(snake, canvas);
 }
 
+// pega a posição inicial da cobra
 static void snake_get_initial_position(Canvas* canvas, Position position) {
   return canvas_get_random_free_position(canvas, position);
 }
 
+// libera a memória alocada para a cobra
 void snake_free(Snake* snake) {
   if (snake == NULL) {
     return;
@@ -125,6 +150,7 @@ void snake_free(Snake* snake) {
   free(snake);
 }
 
+// pega a posição do próximo node
 void get_next_node_position(Snake* snake, Canvas* canvas, int node_index, Position next_node_position) {
   if (snake_node_is_head(snake, node_index)) {
     Direction direction = get_node_direction(snake, node_index);
@@ -134,10 +160,12 @@ void get_next_node_position(Snake* snake, Canvas* canvas, int node_index, Positi
   }
 }
 
+// move um node na direção que a cobra está indo
 static void snake_move_node(Snake* snake, Canvas* canvas, int node_index) {
   get_next_node_position(snake, canvas, node_index, snake->node_positions[node_index]);
 }
 
+// move a cobra inteira
 void snake_move(Snake* snake, Canvas* canvas) {
   snake_remove(snake, canvas);
 
@@ -148,6 +176,7 @@ void snake_move(Snake* snake, Canvas* canvas) {
   snake_put(snake, canvas);
 }
 
+// checa se a cobra colide com uma posição específica
 static bool snake_collides(Snake* snake, Position position) {
   for (int i = 0; i < snake->size; i++) {
     if (positions_collide(position, snake->node_positions[i])) {
@@ -158,6 +187,7 @@ static bool snake_collides(Snake* snake, Position position) {
   return false;
 }
 
+// checa se a cobra colide consigo mesma
 bool snake_self_collides(Snake* snake) {
   for (int i = 1; i < snake->size; i++) {
     if (positions_collide(snake->node_positions[0], snake->node_positions[i])) {
@@ -168,6 +198,7 @@ bool snake_self_collides(Snake* snake) {
   return false;
 }
 
+// inicia a cobra
 Snake* snake_init(Canvas* canvas, Position position, Direction direction, int initial_size) {
   if (
       initial_size < 1 ||

@@ -233,33 +233,34 @@ int game_loop() {
 int main() {
     stdio_init_all();
 
-    // joystick
+    // inicia joystick
     joystick_init();
-    
-    // neopixel (leds)
+
+    // inicia neopixel (leds)
     npInit(LED_PIN);
     npClear();
 
-    // ssd1306 (display oled)
+    // inicia ssd1306 (display oled)
     i2c_init(i2c1, ssd1306_i2c_clock * 1000);
     gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
     gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
     gpio_pull_up(I2C_SDA);
     gpio_pull_up(I2C_SCL);
 
-    // (button a)
+    // inicia botão a
     gpio_init(BUTTON_A);
     gpio_set_dir(BUTTON_A, GPIO_IN);
     gpio_pull_up(BUTTON_A);
 
-    // (button b)
+    // inicia botão b
     gpio_init(BUTTON_B);
     gpio_set_dir(BUTTON_B, GPIO_IN);
     gpio_pull_up(BUTTON_B);
 
-    // (buzzer)
+    // inicia buzzer
     pwm_init_buzzer(BUZZER_PIN);
 
+    // texto a ser mostrado no display oled no início do programa
     char *controls_text_on_start[] = {
         "Snake",
         "",
@@ -267,19 +268,25 @@ int main() {
         "B Play",
     };
 
+    // limpa a matriz de leds
     npClear();
     npWrite();
+
+    // limpa o display oled
     RenderArea text_area = ssd1306_init();
     uint8_t ssd[ssd1306_buffer_length];
     ssd1306_clear(ssd, ssd1306_buffer_length, text_area);
     display_show_lines(ssd, count_of(ssd), controls_text_on_start, count_of(controls_text_on_start), text_area);
 
+    // espera o usuário fazer uma escolha pressionando algum dos botões
     int button_down = wait_button_a_or_b();
 
     if (button_down == BUTTON_A) {
+        // usuário apertou A, então o programa limpa a mensagem do display oled e encerra
         ssd1306_clear(ssd, ssd1306_buffer_length, text_area);
         return 0;
     } else {
+        // usuário apertou B, então o programa espera um pouco e inicia o jogo
         sleep_ms(200);
     }
 
@@ -294,9 +301,10 @@ int main() {
         }
     }
 
+    // jogo encerrado, limpa display oled
     ssd1306_clear(ssd, ssd1306_buffer_length, text_area);
 
-    // Weird led bugs made me paranoid
+    // limpa matriz de leds (3 vezes para evitar bugs estranhos que ocorreram nos testes)
     for (int i = 0; i < 3; i++) {
         npClear();
         npWrite();

@@ -5,6 +5,14 @@
 #include "../inc/joystick.h"
 #include "../inc/constants.h"
 
+// ===========================================================================
+// JOYSTICK
+// Facilita o uso do joystick no código principal ao encapsular a lógica da
+// captura de input e os cálculos necessários para determinar informações como
+// a direção em que ele está inclinado
+// ===========================================================================
+
+// inicia o joystick
 void joystick_init() {
     adc_init();
 
@@ -13,6 +21,15 @@ void joystick_init() {
     adc_gpio_init(27);
 }
 
+// pega informações sobre o joystick.
+// y_raw, x_raw, max, x_normalized e y_normalized foram copiados do exemplo em
+// https://github.com/BitDogLab/BitDogLab-C/blob/main/joystick/joystick.c.
+// as demais informações foram descobertas usando matemática básica.
+// "normalized" aqui significa um valor entre 0 e 1, para representar
+// porcentagem e deixar parte do código mais intuitivo.
+// uma direção é assumida somente se o joystick está inclinado mais que 50% do
+// raio da volta total que ele é capaz de fazer, caso contrário a direção é
+// DIRECTION_NONE.
 JoystickInfo joystick_get_info() {
     JoystickInfo info = {};
 

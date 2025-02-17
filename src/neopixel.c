@@ -4,6 +4,13 @@
 #include "hardware/clocks.h"
 #include "../inc/neopixel.h"
 
+// =================================================================================
+// NEOPIXEL
+// Código copiado dos arquivos em:
+// - https://github.com/BitDogLab/BitDogLab-C/blob/main/neopixel_pio/neopixel_pio.c
+// - https://gist.github.com/JonathasJivago/d61c6b6e5f44bdbe02df3e6fdd79754b
+// =================================================================================
+
 // Biblioteca gerada pelo arquivo .pio durante compilação.
 #include "ws2818b.pio.h"
 
