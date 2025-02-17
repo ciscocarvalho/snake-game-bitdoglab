@@ -117,9 +117,15 @@ int game_loop() {
 
     bool going = true;
     bool allow_speeding = false;
+    static displaying_text_in_game = false;
     int next_action;
 
     while (going) {
+        if (!displaying_text_in_game) {
+            display_show_lines(ssd, count_of(ssd), controls_text_in_game, count_of(controls_text_in_game), text_area);
+            displaying_text_in_game = true;
+        }
+
         int total_delay = 500;
         int step_delay = 10;
         int steps = total_delay / step_delay;
@@ -195,9 +201,11 @@ int game_loop() {
             if (game_over) {
                 play_game_over(BUZZER_PIN);
                 display_show_lines(ssd, count_of(ssd), controls_text_on_loss, count_of(controls_text_on_loss), text_area);
+                displaying_text_in_game = false;
             } else {
                 play_game_won(BUZZER_PIN);
                 display_show_lines(ssd, count_of(ssd), controls_text_on_win, count_of(controls_text_on_win), text_area);
+                displaying_text_in_game = false;
             }
 
             uint8_t button_down = wait_button_a_or_b();
