@@ -7,6 +7,7 @@
 #include "pico/time.h"
 #include "../inc/display_oled/ssd1306.h"
 #include "hardware/pwm.h"
+#include <menu_text.h>
 
 // =============================================================
 // UTILS
@@ -18,6 +19,7 @@
 // de alocação dinâmica.
 void memory_allocation_error() {
   fprintf(stderr, "Failed to allocate memory.\n");
+  printf("Failed to allocate memory.\n");
   exit(EXIT_FAILURE);
 }
 
@@ -93,6 +95,12 @@ void display_show_lines(uint8_t *ssd, uint8_t ssd_size, char* lines[], uint8_t l
 
 void display_show_line(uint8_t *ssd, uint8_t ssd_size, char* line, RenderArea frame_area) {
     display_show_lines(ssd, ssd_size, (char* [1]){ line }, 1, frame_area);
+}
+
+void display_menu_text(MenuText menu_text, uint8_t *ssd, RenderArea frame_area) {
+    MenuTextView* mtv_start = menu_text_view_create(menu_text);
+    display_show_lines(ssd, count_of(ssd), mtv_start->lines, mtv_start->lines_size, frame_area);
+    menu_text_view_free(mtv_start);
 }
 
 bool is_button_down(uint8_t button) {

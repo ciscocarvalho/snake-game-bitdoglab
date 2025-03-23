@@ -17,6 +17,7 @@
 #include "./inc/melody.h"
 #include "./inc/neopixel.h"
 #include "./inc/display_oled/ssd1306.h"
+#include "./inc/menu_text.h"
 
 int game_loop() {
     char *controls_text_in_game[] = {
@@ -172,7 +173,7 @@ int game_loop() {
     return next_action;
 }
 
-int main() {
+void init_components() {
     stdio_init_all();
 
     // inicia joystick
@@ -201,13 +202,22 @@ int main() {
 
     // inicia buzzer
     pwm_init_buzzer(BUZZER_PIN);
+}
 
-    // texto a ser mostrado no display oled no início do programa
-    char *controls_text_on_start[] = {
-        "Snake",
-        "",
-        "A Quit",
-        "B Play",
+int main() {
+    init_components();
+
+    MenuOption options[] = {
+        { .action = ACTION_QUIT, .label = "Quit" },
+        { .action = ACTION_START, .label = "Play", .selected = true },
+    };
+    MenuText* menu_text_start = menu_text_create(options, count_of(options));
+
+    char* header_lines[] = { "Snake", "" };
+
+    menu_text_start->header = (MenuTextHeader) {
+        .header = header_lines,
+        .header_size = count_of(header_lines),
     };
 
     // limpa a matriz de leds
@@ -218,19 +228,49 @@ int main() {
     RenderArea text_area = ssd1306_init();
     uint8_t ssd[ssd1306_buffer_length];
     ssd1306_clear(ssd, ssd1306_buffer_length, text_area);
-    display_show_lines(ssd, count_of(ssd), controls_text_on_start, count_of(controls_text_on_start), text_area);
+    display_menu_text(*menu_text_start, ssd, text_area);
 
-    // espera o usuário fazer uma escolha pressionando algum dos botões
-    int button_down = wait_button_a_or_b();
+    int joystick_wait = 150;
+    int button_wait = 50;
 
-    if (button_down == BUTTON_A) {
-        // usuário apertou A, então o programa limpa a mensagem do display oled e encerra
-        ssd1306_clear(ssd, ssd1306_buffer_length, text_area);
-        return 0;
-    } else {
-        // usuário apertou B, então o programa espera um pouco e inicia o jogo
-        sleep_ms(200);
+    for (int i = 0; true; i = (i + 1) * button_wait >= joystick_wait ? 0 : i + 1) {
+        if ((i + 1) * button_wait >= joystick_wait) {
+            JoystickInfo joystick_info = joystick_get_info();
+            Direction joystick_direction = joystick_info.direction;
+
+            switch (joystick_direction) {
+                case DIRECTION_SOUTH: {
+                    menu_text_move_selection_down(menu_text_start);
+                    display_menu_text(*menu_text_start, ssd, text_area);
+                    break;
+                }
+                case DIRECTION_NORTH: {
+                    menu_text_move_selection_up(menu_text_start);
+                    display_menu_text(*menu_text_start, ssd, text_area);
+                    break;
+                }
+            }
+        }
+
+        bool button_b_down = is_button_down(BUTTON_B);
+
+        if (button_b_down) {
+            uint selected_action = menu_text_get_selected_option(*menu_text_start).action;
+
+            switch (selected_action) {
+                case ACTION_QUIT: {
+                    goto game_end;
+                }
+                case ACTION_START: {
+                    goto game_start;
+                }
+            }
+        }
+
+        sleep_ms(button_wait);
     }
+
+    game_start:
 
     bool keep_playing = true;
 
@@ -242,6 +282,10 @@ int main() {
             case ACTION_RESTART: break;
         }
     }
+
+    game_end:
+
+    menu_text_free(menu_text_start);
 
     // jogo encerrado, limpa display oled
     ssd1306_clear(ssd, ssd1306_buffer_length, text_area);

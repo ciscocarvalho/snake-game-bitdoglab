@@ -8,7 +8,8 @@
 #define BUZZER_PIN 21
 
 #define ACTION_RESTART 0
-#define ACTION_QUIT 1
+#define ACTION_START 1
+#define ACTION_QUIT 2
 
 #define CELL_UNUSED 0
 #define CELL_SNAKE_BODY 1

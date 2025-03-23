@@ -60,6 +60,7 @@ add_executable(
     src/neopixel.c
     src/snake.c
     src/utils.c
+    src/menu_text.c
     src/display_oled/ssd1306_i2c.c
 )
 

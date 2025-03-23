@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "types.h"
 #include "../inc/display_oled/ssd1306.h"
+#include "../inc/menu_text.h"
 
 void memory_allocation_error();
 
@@ -18,6 +19,8 @@ bool positions_collide(Position position1, Position position2);
 
 void display_show_lines(uint8_t *ssd, uint8_t ssd_size, char* lines[], uint8_t lines_size, RenderArea frame_area);
 void display_show_line(uint8_t *ssd, uint8_t ssd_size, char* line, RenderArea frame_area);
+
+void display_menu_text(MenuText menu_text, uint8_t *ssd, RenderArea frame_area);
 
 bool is_button_down(uint8_t button);
 
