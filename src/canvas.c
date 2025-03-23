@@ -93,16 +93,16 @@ static void gen_sprite(Canvas* canvas, int sprite[5][5][3]) {
           copy_color((int [3]){ 0, 0, 0 }, sprite[row][col]);
           break;
         } case CELL_SNAKE_HEAD: {
-          copy_color((int [3]){ 1, 1, 1 }, sprite[row][col]);
+          copy_color((int [3]){ 2, 2, 2 }, sprite[row][col]);
           break;
         } case CELL_FOOD: {
-          copy_color((int [3]){ 1, 0, 0 }, sprite[row][col]);
+          copy_color((int [3]){ 2, 0, 0 }, sprite[row][col]);
           break;
         } case CELL_SNAKE_BODY: {
-          copy_color((int [3]){ 0, 0, 1 }, sprite[row][col]);
+          copy_color((int [3]){ 0, 0, 2 }, sprite[row][col]);
           break;
         } default: {
-          copy_color((int [3]){ 0, 1, 0 }, sprite[row][col]);
+          copy_color((int [3]){ 0, 2, 0 }, sprite[row][col]);
           break;
         }
       }
