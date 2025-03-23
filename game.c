@@ -18,13 +18,6 @@
 #include "./inc/neopixel.h"
 #include "./inc/display_oled/ssd1306.h"
 
-const uint I2C_SDA = 14;
-const uint I2C_SCL = 15;
-
-#define BUTTON_A 5
-#define BUTTON_B 6
-#define BUZZER_PIN 21
-
 void display_show_lines(uint8_t *ssd, uint8_t ssd_size, char* lines[], uint8_t lines_size, RenderArea frame_area) {
     ssd1306_clear(ssd, ssd_size, frame_area);
 
@@ -42,9 +35,6 @@ void display_show_lines(uint8_t *ssd, uint8_t ssd_size, char* lines[], uint8_t l
 void display_show_line(uint8_t *ssd, uint8_t ssd_size, char* line, RenderArea frame_area) {
     display_show_lines(ssd, ssd_size, (char* [1]){ line }, 1, frame_area);
 }
-
-#define ACTION_RESTART 0
-#define ACTION_QUIT 1
 
 bool is_button_down(uint8_t button) {
     return gpio_get(button) == 0;
