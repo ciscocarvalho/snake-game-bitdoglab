@@ -5,6 +5,8 @@
 #include <constants.h>
 #include "../inc/types.h"
 #include "pico/time.h"
+#include "../inc/display_oled/ssd1306.h"
+#include "hardware/pwm.h"
 
 // =============================================================
 // UTILS
@@ -73,4 +75,52 @@ int randint(int min, int max) {
   }
 
   return min + rand() % (max - min + 1);
+}
+
+void display_show_lines(uint8_t *ssd, uint8_t ssd_size, char* lines[], uint8_t lines_size, RenderArea frame_area) {
+    ssd1306_clear(ssd, ssd_size, frame_area);
+
+    for (uint i = 0; i < lines_size; i++) {
+        uint font_size = 8;
+        uint x = (ssd1306_width - strlen(lines[i]) * font_size) / 2 - 1;
+        uint y = (ssd1306_height - lines_size * font_size) / 2 + i * font_size;
+
+        ssd1306_draw_string(ssd, x, y, lines[i]);
+    }
+
+    render_on_display(ssd, &frame_area);
+}
+
+void display_show_line(uint8_t *ssd, uint8_t ssd_size, char* line, RenderArea frame_area) {
+    display_show_lines(ssd, ssd_size, (char* [1]){ line }, 1, frame_area);
+}
+
+bool is_button_down(uint8_t button) {
+    return gpio_get(button) == 0;
+}
+
+int wait_button_a_or_b() {
+    while (true) {
+        bool button_a_down = is_button_down(BUTTON_A);
+        bool button_b_down = is_button_down(BUTTON_B);
+
+        if (button_a_down) {
+            return BUTTON_A;
+        } else if (button_b_down) {
+            return BUTTON_B;
+        }
+
+        sleep_ms(50);
+    }
+
+    return -1;
+}
+
+void pwm_init_buzzer(uint pin) {
+    gpio_set_function(pin, GPIO_FUNC_PWM);
+    uint slice_num = pwm_gpio_to_slice_num(pin);
+    pwm_config config = pwm_get_default_config();
+    pwm_config_set_clkdiv(&config, 4.0f); // Ajusta divisor de clock
+    pwm_init(slice_num, &config, true);
+    pwm_set_gpio_level(pin, 0); // Desliga o PWM inicialmente
 }
