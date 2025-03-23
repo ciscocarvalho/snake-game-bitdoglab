@@ -241,11 +241,13 @@ int main() {
             switch (joystick_direction) {
                 case DIRECTION_SOUTH: {
                     menu_text_move_selection_down(menu_text_start);
+                    play_selection_move(BUZZER_PIN);
                     display_menu_text(*menu_text_start, ssd, text_area);
                     break;
                 }
                 case DIRECTION_NORTH: {
                     menu_text_move_selection_up(menu_text_start);
+                    play_selection_move(BUZZER_PIN);
                     display_menu_text(*menu_text_start, ssd, text_area);
                     break;
                 }

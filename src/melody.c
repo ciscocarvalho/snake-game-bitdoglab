@@ -62,3 +62,8 @@ void play_bite(uint pin) {
     Melody melody = { { 392, 50 } };
     play_melody(pin, melody, count_of(melody));
 }
+
+void play_selection_move(uint pin) {
+    Melody melody = { { NOTE_Cs4, 50 } };
+    play_melody(pin, melody, count_of(melody));
+}

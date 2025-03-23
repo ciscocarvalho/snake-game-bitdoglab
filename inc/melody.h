@@ -27,3 +27,4 @@ void play_melody(uint pin, Melody melody, uint melody_length);
 void play_game_won(uint pin);
 void play_game_over(uint pin);
 void play_bite(uint pin);
+void play_selection_move(uint pin);
