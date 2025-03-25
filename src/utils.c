@@ -7,7 +7,8 @@
 #include "pico/time.h"
 #include "../inc/display_oled/ssd1306.h"
 #include "hardware/pwm.h"
-#include <menu_text.h>
+#include "../inc/menu_text.h"
+#include <string.h>
 
 // =============================================================
 // UTILS

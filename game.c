@@ -44,7 +44,7 @@ int game_loop() {
 
     RenderArea text_area = ssd1306_init();
     uint8_t ssd[ssd1306_buffer_length];
-    ssd1306_clear(ssd, ssd1306_buffer_length, text_area);
+    ssd1306_clear(ssd, (uint8_t) ssd1306_buffer_length, text_area);
 
     Canvas* canvas = canvas_init(5, 5);
 
@@ -60,12 +60,12 @@ int game_loop() {
 
     bool going = true;
     bool allow_speeding = false;
-    static displaying_text_in_game = false;
+    static bool displaying_text_in_game = false;
     int next_action;
 
     while (going) {
         if (!displaying_text_in_game) {
-            display_show_lines(ssd, count_of(ssd), controls_text_in_game, count_of(controls_text_in_game), text_area);
+            display_show_lines(ssd, (uint8_t) count_of(ssd), controls_text_in_game, count_of(controls_text_in_game), text_area);
             displaying_text_in_game = true;
         }
 
@@ -143,11 +143,11 @@ int game_loop() {
         if (game_over || game_won) {
             if (game_over) {
                 play_game_over(BUZZER_PIN);
-                display_show_lines(ssd, count_of(ssd), controls_text_on_loss, count_of(controls_text_on_loss), text_area);
+                display_show_lines(ssd, (uint8_t) count_of(ssd), controls_text_on_loss, count_of(controls_text_on_loss), text_area);
                 displaying_text_in_game = false;
             } else {
                 play_game_won(BUZZER_PIN);
-                display_show_lines(ssd, count_of(ssd), controls_text_on_win, count_of(controls_text_on_win), text_area);
+                display_show_lines(ssd, (uint8_t) count_of(ssd), controls_text_on_win, count_of(controls_text_on_win), text_area);
                 displaying_text_in_game = false;
             }
 
@@ -227,7 +227,7 @@ int main() {
     // limpa o display oled
     RenderArea text_area = ssd1306_init();
     uint8_t ssd[ssd1306_buffer_length];
-    ssd1306_clear(ssd, ssd1306_buffer_length, text_area);
+    ssd1306_clear(ssd, (uint8_t) ssd1306_buffer_length, text_area);
     display_menu_text(*menu_text_start, ssd, text_area);
 
     int joystick_wait = 150;
@@ -290,7 +290,7 @@ int main() {
     menu_text_free(menu_text_start);
 
     // jogo encerrado, limpa display oled
-    ssd1306_clear(ssd, ssd1306_buffer_length, text_area);
+    ssd1306_clear(ssd, (uint8_t) ssd1306_buffer_length, text_area);
 
     // limpa matriz de leds (3 vezes para evitar bugs estranhos que ocorreram nos testes)
     for (int i = 0; i < 3; i++) {

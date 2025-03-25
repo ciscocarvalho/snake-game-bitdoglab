@@ -2,6 +2,7 @@
 #include "pico/types.h"
 #include "hardware/clocks.h"
 #include "hardware/pwm.h"
+#include "pico/stdlib.h"
 
 // ===========================================================================
 // MELODY
