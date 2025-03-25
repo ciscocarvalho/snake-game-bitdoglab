@@ -99,7 +99,7 @@ MenuOption menu_text_get_selected_option(MenuText menu_text) {
     exit(EXIT_FAILURE);
 }
 
-static menu_text_move_selection(MenuText* menu_text, bool up) {
+static void menu_text_move_selection(MenuText* menu_text, bool up) {
     int selected_option_index = -1;
     MenuOption* option;
 
