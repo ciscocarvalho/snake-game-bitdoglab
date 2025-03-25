@@ -9,7 +9,7 @@ typedef struct {
 } MenuOption;
 
 typedef struct {
-    char **header;
+    char** header;
     size_t header_size;
 } MenuTextHeader;
 
@@ -30,7 +30,7 @@ typedef struct {
     size_t lines_size;
 } MenuTextView;
 
-MenuText* menu_text_create(MenuOption options[], size_t options_size);
+MenuText* menu_text_create(MenuOption* options, size_t options_size);
 void menu_text_free(MenuText* menu_text);
 
 MenuTextView* menu_text_view_create(MenuText menu_text);

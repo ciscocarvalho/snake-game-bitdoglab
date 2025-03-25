@@ -27,3 +27,5 @@ bool is_button_down(uint8_t button);
 int wait_button_a_or_b();
 
 void pwm_init_buzzer(uint pin);
+
+uint wait_menu_text_choice(MenuText* menu_text, uint8_t* ssd, RenderArea render_area);

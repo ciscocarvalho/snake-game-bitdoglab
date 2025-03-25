@@ -19,6 +19,48 @@
 #include "./inc/display_oled/ssd1306.h"
 #include "./inc/menu_text.h"
 
+MenuText* create_menu_text_win() {
+    size_t options_size = 2;
+    MenuOption* options = malloc(sizeof(MenuOption) * options_size);
+    options[0] = (MenuOption) { .action = ACTION_QUIT, .label = "Quit" };
+    options[1] = (MenuOption) { .action = ACTION_RESTART, .label = "Play again", .selected = true };
+
+    MenuText* menu_text = menu_text_create(options, options_size);
+
+    size_t header_size = 2;
+    char** header_lines = malloc(sizeof(char *) * header_size);
+    header_lines[0] = "You win";
+    header_lines[1] = "";
+
+    menu_text->header = (MenuTextHeader) {
+        .header = header_lines,
+        .header_size = header_size,
+    };
+
+    return menu_text;
+}
+
+MenuText* create_menu_text_loss()  {
+    size_t options_size = 2;
+    MenuOption* options = malloc(sizeof(MenuOption) * options_size);
+    options[0] = (MenuOption) { .action = ACTION_QUIT, .label = "Quit" };
+    options[1] = (MenuOption) { .action = ACTION_RESTART, .label = "Try again", .selected = true };
+
+    MenuText* menu_text = menu_text_create(options, options_size);
+
+    size_t header_size = 2;
+    char** header_lines = malloc(sizeof(char *) * header_size);
+    header_lines[0] = "You lose";
+    header_lines[1] = "";
+
+    menu_text->header = (MenuTextHeader) {
+        .header = header_lines,
+        .header_size = header_size,
+    };
+
+    return menu_text;
+}
+
 int game_loop() {
     char *controls_text_in_game[] = {
         "Controls",
@@ -28,19 +70,8 @@ int game_loop() {
         "B Restart",
     };
 
-    char *controls_text_on_win[] = {
-        "You win",
-        "",
-        "A Quit",
-        "B Play again",
-    };
-
-    char *controls_text_on_loss[] = {
-        "You lose",
-        "",
-        "A Quit",
-        "B Try again",
-    };
+    MenuText* menu_text_win = create_menu_text_win();
+    MenuText* menu_text_loss = create_menu_text_loss();
 
     RenderArea text_area = ssd1306_init();
     uint8_t ssd[ssd1306_buffer_length];
@@ -143,19 +174,14 @@ int game_loop() {
         if (game_over || game_won) {
             if (game_over) {
                 play_game_over(BUZZER_PIN);
-                display_show_lines(ssd, (uint8_t) count_of(ssd), controls_text_on_loss, count_of(controls_text_on_loss), text_area);
+                display_menu_text(*menu_text_loss, ssd, text_area);
+                next_action = wait_menu_text_choice(menu_text_loss, ssd, text_area);
                 displaying_text_in_game = false;
             } else {
                 play_game_won(BUZZER_PIN);
-                display_show_lines(ssd, (uint8_t) count_of(ssd), controls_text_on_win, count_of(controls_text_on_win), text_area);
+                display_menu_text(*menu_text_win, ssd, text_area);
+                next_action = wait_menu_text_choice(menu_text_win, ssd, text_area);
                 displaying_text_in_game = false;
-            }
-
-            uint8_t button_down = wait_button_a_or_b();
-            next_action = button_down == BUTTON_A ? ACTION_QUIT : ACTION_RESTART;
-
-            while (is_button_down(button_down)) {
-                sleep_ms(50);
             }
 
             going = false;
@@ -164,6 +190,8 @@ int game_loop() {
         canvas_render(canvas);
     }
 
+    menu_text_free(menu_text_loss);
+    menu_text_free(menu_text_win);
     food_free(food);
     snake_free(snake);
     canvas_clear(canvas);
@@ -207,17 +235,21 @@ void init_components() {
 int main() {
     init_components();
 
-    MenuOption options[] = {
-        { .action = ACTION_QUIT, .label = "Quit" },
-        { .action = ACTION_START, .label = "Play", .selected = true },
-    };
-    MenuText* menu_text_start = menu_text_create(options, count_of(options));
+    size_t options_size = 2;
+    MenuOption* options = malloc(sizeof(MenuOption) * options_size);
+    options[0] = (MenuOption) { .action = ACTION_QUIT, .label = "Quit" };
+    options[1] = (MenuOption) { .action = ACTION_START, .label = "Play", .selected = true };
 
-    char* header_lines[] = { "Snake", "" };
+    MenuText* menu_text_start = menu_text_create(options, options_size);
+
+    size_t header_size = 2;
+    char** header_lines = malloc(sizeof(char *) * header_size);
+    header_lines[0] = "Snake";
+    header_lines[1] = "";
 
     menu_text_start->header = (MenuTextHeader) {
         .header = header_lines,
-        .header_size = count_of(header_lines),
+        .header_size = header_size,
     };
 
     // limpa a matriz de leds
@@ -230,46 +262,15 @@ int main() {
     ssd1306_clear(ssd, (uint8_t) ssd1306_buffer_length, text_area);
     display_menu_text(*menu_text_start, ssd, text_area);
 
-    int joystick_wait = 150;
-    int button_wait = 50;
+    uint selected_action = wait_menu_text_choice(menu_text_start, ssd, text_area);
 
-    for (int i = 0; true; i = (i + 1) * button_wait >= joystick_wait ? 0 : i + 1) {
-        if ((i + 1) * button_wait >= joystick_wait) {
-            JoystickInfo joystick_info = joystick_get_info();
-            Direction joystick_direction = joystick_info.direction;
-
-            switch (joystick_direction) {
-                case DIRECTION_SOUTH: {
-                    menu_text_move_selection_down(menu_text_start);
-                    play_selection_move(BUZZER_PIN);
-                    display_menu_text(*menu_text_start, ssd, text_area);
-                    break;
-                }
-                case DIRECTION_NORTH: {
-                    menu_text_move_selection_up(menu_text_start);
-                    play_selection_move(BUZZER_PIN);
-                    display_menu_text(*menu_text_start, ssd, text_area);
-                    break;
-                }
-            }
+    switch (selected_action) {
+        case ACTION_QUIT: {
+            goto game_end;
         }
-
-        bool button_b_down = is_button_down(BUTTON_B);
-
-        if (button_b_down) {
-            uint selected_action = menu_text_get_selected_option(*menu_text_start).action;
-
-            switch (selected_action) {
-                case ACTION_QUIT: {
-                    goto game_end;
-                }
-                case ACTION_START: {
-                    goto game_start;
-                }
-            }
+        case ACTION_START: {
+            goto game_start;
         }
-
-        sleep_ms(button_wait);
     }
 
     game_start:

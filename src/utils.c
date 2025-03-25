@@ -8,6 +8,8 @@
 #include "../inc/display_oled/ssd1306.h"
 #include "hardware/pwm.h"
 #include "../inc/menu_text.h"
+#include "../inc/joystick.h"
+#include "../inc/melody.h"
 #include <string.h>
 
 // =============================================================
@@ -100,7 +102,7 @@ void display_show_line(uint8_t *ssd, uint8_t ssd_size, char* line, RenderArea fr
 
 void display_menu_text(MenuText menu_text, uint8_t *ssd, RenderArea frame_area) {
     MenuTextView* mtv_start = menu_text_view_create(menu_text);
-    display_show_lines(ssd, count_of(ssd), mtv_start->lines, mtv_start->lines_size, frame_area);
+    display_show_lines(ssd, (uint8_t)count_of(ssd), mtv_start->lines, mtv_start->lines_size, frame_area);
     menu_text_view_free(mtv_start);
 }
 
@@ -132,4 +134,41 @@ void pwm_init_buzzer(uint pin) {
     pwm_config_set_clkdiv(&config, 4.0f); // Ajusta divisor de clock
     pwm_init(slice_num, &config, true);
     pwm_set_gpio_level(pin, 0); // Desliga o PWM inicialmente
+}
+
+uint wait_menu_text_choice(MenuText* menu_text, uint8_t* ssd, RenderArea render_area) {
+    int joystick_wait = 150;
+    int button_wait = 50;
+
+    for (int i = 0; true; i = (i + 1) * button_wait >= joystick_wait ? 0 : i + 1) {
+        if ((i + 1) * button_wait >= joystick_wait) {
+            JoystickInfo joystick_info = joystick_get_info();
+            Direction joystick_direction = joystick_info.direction;
+
+            switch (joystick_direction) {
+                case DIRECTION_SOUTH: {
+                    menu_text_move_selection_down(menu_text);
+                    play_selection_move(BUZZER_PIN);
+                    display_menu_text(*menu_text, ssd, render_area);
+                    break;
+                }
+                case DIRECTION_NORTH: {
+                    menu_text_move_selection_up(menu_text);
+                    play_selection_move(BUZZER_PIN);
+                    display_menu_text(*menu_text, ssd, render_area);
+                    break;
+                }
+            }
+        }
+
+        bool button_b_down = is_button_down(BUTTON_B);
+
+        if (button_b_down) {
+            uint selected_action = menu_text_get_selected_option(*menu_text).action;
+
+            return selected_action;
+        }
+
+        sleep_ms(button_wait);
+    }
 }

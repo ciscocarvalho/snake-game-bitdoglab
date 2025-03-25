@@ -6,8 +6,23 @@
 #include "../inc/menu_text.h"
 #include "../inc/utils.h"
 
-MenuText* menu_text_create(MenuOption options[], size_t options_size) {
+MenuText* menu_text_create(MenuOption* options, size_t options_size) {
     MenuText* menu_text = malloc(sizeof(MenuText));
+
+    char** header_lines = NULL;
+
+    menu_text->header = (MenuTextHeader) {
+        .header = header_lines,
+        .header_size = 0,
+    };
+
+    char** footer_lines = NULL;
+
+    menu_text->footer = (MenuTextFooter) {
+        .footer = footer_lines,
+        .footer_size = 0,
+    };
+
     menu_text->options = options;
     menu_text->options_size = options_size;
 
@@ -25,6 +40,18 @@ void menu_text_view_free(MenuTextView* menu_text_view) {
 void menu_text_free(MenuText* menu_text) {
     if (menu_text == NULL) {
         return;
+    }
+
+    if (menu_text->header.header != NULL) {
+        free(menu_text->header.header);
+    }
+
+    if (menu_text->options != NULL) {
+        free(menu_text->options);
+    }
+
+    if (menu_text->footer.footer != NULL) {
+        free(menu_text->footer.footer);
     }
 
     free(menu_text);
