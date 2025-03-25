@@ -14,12 +14,12 @@ MenuText* menu_text_create(MenuOption options[], size_t options_size) {
     return menu_text;
 }
 
-void menu_text_view_free(MenuText* menu_text) {
-    if (menu_text == NULL) {
+void menu_text_view_free(MenuTextView* menu_text_view) {
+    if (menu_text_view == NULL) {
         return;
     }
 
-    free(menu_text);
+    free(menu_text_view);
 };
 
 void menu_text_free(MenuText* menu_text) {

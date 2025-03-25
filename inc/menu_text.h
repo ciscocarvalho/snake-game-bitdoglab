@@ -34,7 +34,7 @@ MenuText* menu_text_create(MenuOption options[], size_t options_size);
 void menu_text_free(MenuText* menu_text);
 
 MenuTextView* menu_text_view_create(MenuText menu_text);
-void menu_text_view_free(MenuText* menu_text);
+void menu_text_view_free(MenuTextView* menu_text_view);
 
 MenuOption menu_text_get_selected_option(MenuText menu_text);
 
