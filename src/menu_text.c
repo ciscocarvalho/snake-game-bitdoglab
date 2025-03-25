@@ -35,7 +35,7 @@ static char* format_selected_option_label(char* label) {
     char* suffix = " <";
     size_t new_str_len = strlen(preffix) + strlen(label) + strlen(suffix);
     char* new_str = malloc(new_str_len * sizeof(char));
-    new_str = asnprintf(new_str, new_str_len, "%s%s%s", preffix, label, suffix);
+    new_str = asnprintf(new_str, &new_str_len, "%s%s%s", preffix, label, suffix);
     return new_str;
 }
 
