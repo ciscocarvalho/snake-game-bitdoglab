@@ -22,8 +22,8 @@
 MenuText* create_menu_text_win() {
     size_t options_size = 2;
     MenuOption* options = malloc(sizeof(MenuOption) * options_size);
-    options[0] = (MenuOption) { .action = ACTION_QUIT, .label = "Quit" };
-    options[1] = (MenuOption) { .action = ACTION_RESTART, .label = "Play again", .selected = true };
+    options[0] = (MenuOption) { .action = ACTION_RESTART, .label = "Play again", .selected = true };
+    options[1] = (MenuOption) { .action = ACTION_QUIT, .label = "Quit" };
 
     MenuText* menu_text = menu_text_create(options, options_size);
 
@@ -43,8 +43,8 @@ MenuText* create_menu_text_win() {
 MenuText* create_menu_text_loss()  {
     size_t options_size = 2;
     MenuOption* options = malloc(sizeof(MenuOption) * options_size);
-    options[0] = (MenuOption) { .action = ACTION_QUIT, .label = "Quit" };
-    options[1] = (MenuOption) { .action = ACTION_RESTART, .label = "Try again", .selected = true };
+    options[0] = (MenuOption) { .action = ACTION_RESTART, .label = "Try again", .selected = true };
+    options[1] = (MenuOption) { .action = ACTION_QUIT, .label = "Quit" };
 
     MenuText* menu_text = menu_text_create(options, options_size);
 
@@ -237,8 +237,8 @@ int main() {
 
     size_t options_size = 2;
     MenuOption* options = malloc(sizeof(MenuOption) * options_size);
-    options[0] = (MenuOption) { .action = ACTION_QUIT, .label = "Quit" };
-    options[1] = (MenuOption) { .action = ACTION_START, .label = "Play", .selected = true };
+    options[0] = (MenuOption) { .action = ACTION_START, .label = "Play", .selected = true };
+    options[1] = (MenuOption) { .action = ACTION_QUIT, .label = "Quit" };
 
     MenuText* menu_text_start = menu_text_create(options, options_size);
 
