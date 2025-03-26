@@ -91,7 +91,7 @@ int game_loop() {
 
     bool going = true;
     bool allow_speeding = false;
-    static bool displaying_text_in_game = false;
+    bool displaying_text_in_game = false;
     int next_action;
 
     while (going) {
