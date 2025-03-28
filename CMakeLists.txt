@@ -61,6 +61,7 @@ add_executable(
     src/snake.c
     src/utils.c
     src/menu_text.c
+    src/settings.c
     src/display_oled/ssd1306_i2c.c
 )
 

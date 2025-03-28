@@ -10,6 +10,7 @@
 #include "../inc/menu_text.h"
 #include "../inc/joystick.h"
 #include "../inc/melody.h"
+#include "../inc/settings.h"
 #include <string.h>
 
 // =============================================================
@@ -145,19 +146,18 @@ uint wait_menu_text_choice(MenuText* menu_text, uint8_t* ssd, RenderArea render_
             JoystickInfo joystick_info = joystick_get_info();
             Direction joystick_direction = joystick_info.direction;
 
-            switch (joystick_direction) {
-                case DIRECTION_SOUTH: {
+            if (joystick_direction == DIRECTION_SOUTH || joystick_direction == DIRECTION_NORTH) {
+                if (joystick_direction == DIRECTION_SOUTH) {
                     menu_text_move_selection_down(menu_text);
-                    play_selection_move(BUZZER_PIN);
-                    display_menu_text(*menu_text, ssd, render_area);
-                    break;
-                }
-                case DIRECTION_NORTH: {
+                } else {
                     menu_text_move_selection_up(menu_text);
-                    play_selection_move(BUZZER_PIN);
-                    display_menu_text(*menu_text, ssd, render_area);
-                    break;
                 }
+
+                if (!game_settings_get()->sound.sound_effects.mute) {
+                  play_selection_move(BUZZER_PIN);
+                }
+
+                display_menu_text(*menu_text, ssd, render_area);
             }
         }
 

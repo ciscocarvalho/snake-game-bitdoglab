@@ -18,6 +18,7 @@
 #include "./inc/neopixel.h"
 #include "./inc/display_oled/ssd1306.h"
 #include "./inc/menu_text.h"
+#include "./inc/settings.h"
 
 MenuText* create_menu_text_win() {
     size_t options_size = 2;
@@ -62,6 +63,8 @@ MenuText* create_menu_text_loss()  {
 }
 
 int game_loop() {
+    GameSettings* settings = game_settings_get();
+
     char *controls_text_in_game[] = {
         "Controls",
         "",
@@ -155,7 +158,9 @@ int game_loop() {
 
         if (positions_collide(next_head_position, food->position)) {
             food_remove(food, canvas);
-            play_bite(BUZZER_PIN);
+            if (!settings->sound.sound_effects.mute) {
+                play_bite(BUZZER_PIN);
+            }
             snake_grow(snake, canvas);
             snake_move(snake, canvas);
 
@@ -173,12 +178,16 @@ int game_loop() {
 
         if (game_over || game_won) {
             if (game_over) {
-                play_game_over(BUZZER_PIN);
+                if (!settings->sound.music.mute) {
+                    play_game_over(BUZZER_PIN);
+                }
                 display_menu_text(*menu_text_loss, ssd, text_area);
                 next_action = wait_menu_text_choice(menu_text_loss, ssd, text_area);
                 displaying_text_in_game = false;
             } else {
-                play_game_won(BUZZER_PIN);
+                if (!settings->sound.music.mute) {
+                    play_game_won(BUZZER_PIN);
+                }
                 display_menu_text(*menu_text_win, ssd, text_area);
                 next_action = wait_menu_text_choice(menu_text_win, ssd, text_area);
                 displaying_text_in_game = false;
@@ -233,6 +242,8 @@ void init_components() {
 }
 
 int main() {
+    GameSettings* settings = game_settings_get();
+
     init_components();
 
     size_t options_size = 2;
