@@ -62,6 +62,57 @@ MenuText* create_menu_text_loss()  {
     return menu_text;
 }
 
+int settings_loop() {
+    size_t options_size = 3;
+    MenuOption* options = malloc(sizeof(MenuOption) * options_size);
+    GameSettings* game_settings = game_settings_get();
+
+    bool* music_mute = &game_settings->sound.music.mute;
+    bool* sound_effects_mute = &game_settings->sound.sound_effects.mute;
+
+    options[0] = (MenuOption) { .action = ACTION_SETTINGS_SOUND_TOGGLE_MUSIC_MUTE, .selected = true };
+    options[1] = (MenuOption) { .action = ACTION_SETTINGS_SOUND_TOGGLE_SOUND_EFFECTS_MUTE };
+    options[2] = (MenuOption) { .action = ACTION_GO_BACK, .label = "Go back" };
+
+    MenuText* menu_text = menu_text_create(options, options_size);
+
+    size_t header_size = 2;
+    char** header_lines = malloc(sizeof(char *) * header_size);
+    header_lines[0] = "Settings";
+    header_lines[1] = "";
+
+    menu_text->header = (MenuTextHeader) {
+        .header = header_lines,
+        .header_size = header_size,
+    };
+
+    RenderArea text_area = ssd1306_init();
+    uint8_t ssd[ssd1306_buffer_length];
+    ssd1306_clear(ssd, (uint8_t) ssd1306_buffer_length, text_area);
+
+    while (true) {
+        options[0].label = !*music_mute ? "music on" : "music off";
+        options[1].label = !*sound_effects_mute ? "sfx on" : "sfx off";
+
+        int action = wait_menu_text_choice(menu_text, ssd, text_area);
+
+        if (action == ACTION_GO_BACK) {
+            break;
+        }
+
+        switch (action) {
+            case ACTION_SETTINGS_SOUND_TOGGLE_SOUND_EFFECTS_MUTE: {
+                *sound_effects_mute = !*sound_effects_mute;
+                break;
+            }
+            case ACTION_SETTINGS_SOUND_TOGGLE_MUSIC_MUTE: {
+                *music_mute = !*music_mute;
+                break;
+            }
+        }
+    }
+}
+
 int game_loop() {
     GameSettings* settings = game_settings_get();
 
@@ -181,14 +232,12 @@ int game_loop() {
                 if (!settings->sound.music.mute) {
                     play_game_over(BUZZER_PIN);
                 }
-                display_menu_text(*menu_text_loss, ssd, text_area);
                 next_action = wait_menu_text_choice(menu_text_loss, ssd, text_area);
                 displaying_text_in_game = false;
             } else {
                 if (!settings->sound.music.mute) {
                     play_game_won(BUZZER_PIN);
                 }
-                display_menu_text(*menu_text_win, ssd, text_area);
                 next_action = wait_menu_text_choice(menu_text_win, ssd, text_area);
                 displaying_text_in_game = false;
             }
@@ -246,10 +295,11 @@ int main() {
 
     init_components();
 
-    size_t options_size = 2;
+    size_t options_size = 3;
     MenuOption* options = malloc(sizeof(MenuOption) * options_size);
     options[0] = (MenuOption) { .action = ACTION_START, .label = "Play", .selected = true };
-    options[1] = (MenuOption) { .action = ACTION_QUIT, .label = "Quit" };
+    options[1] = (MenuOption) { .action = ACTION_SETTINGS, .label = "Settings" };
+    options[2] = (MenuOption) { .action = ACTION_QUIT, .label = "Quit" };
 
     MenuText* menu_text_start = menu_text_create(options, options_size);
 
@@ -267,17 +317,22 @@ int main() {
     npClear();
     npWrite();
 
+    start_menu:
+
     // limpa o display oled
     RenderArea text_area = ssd1306_init();
     uint8_t ssd[ssd1306_buffer_length];
     ssd1306_clear(ssd, (uint8_t) ssd1306_buffer_length, text_area);
-    display_menu_text(*menu_text_start, ssd, text_area);
 
     uint selected_action = wait_menu_text_choice(menu_text_start, ssd, text_area);
 
     switch (selected_action) {
         case ACTION_QUIT: {
             goto game_end;
+        }
+        case ACTION_SETTINGS: {
+            settings_loop();
+            goto start_menu;
         }
         case ACTION_START: {
             goto game_start;

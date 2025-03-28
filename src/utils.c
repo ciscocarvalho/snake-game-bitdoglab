@@ -141,6 +141,8 @@ uint wait_menu_text_choice(MenuText* menu_text, uint8_t* ssd, RenderArea render_
     int joystick_wait = 150;
     int button_wait = 50;
 
+    display_menu_text(*menu_text, ssd, render_area);
+
     for (int i = 0; true; i = (i + 1) * button_wait >= joystick_wait ? 0 : i + 1) {
         if ((i + 1) * button_wait >= joystick_wait) {
             JoystickInfo joystick_info = joystick_get_info();
@@ -165,6 +167,10 @@ uint wait_menu_text_choice(MenuText* menu_text, uint8_t* ssd, RenderArea render_
 
         if (button_b_down) {
             uint selected_action = menu_text_get_selected_option(*menu_text).action;
+
+            while (is_button_down(BUTTON_B)) {
+              sleep_ms(150);
+            };
 
             return selected_action;
         }
